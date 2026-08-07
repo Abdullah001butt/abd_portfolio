@@ -1,25 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { useGsapContext } from "@/hooks/useGsapContext";
 import ScrambleText from "@/components/ui/ScrambleText";
+import TypingText from "@/components/ui/TypingText";
 import HeroStat from "@/components/ui/HeroStat";
 import CornerBrackets from "@/components/ui/CornerBrackets";
 import ParticleField from "@/components/ui/ParticleField";
 import { profile } from "@/lib/data";
 
 export default function Hero() {
-  const [roleIndex, setRoleIndex] = useState(0);
-
-  // Morphing role titles
-  useEffect(() => {
-    const id = setInterval(() => {
-      setRoleIndex((i) => (i + 1) % profile.roles.length);
-    }, 2200);
-    return () => clearInterval(id);
-  }, []);
-
   const scope = useGsapContext<HTMLDivElement>(() => {
     // ── Boot-in sequence: the module resolves into focus, the scanner
     // sweeps once, the brackets snap in, then identity resolves. Runs on
@@ -211,19 +201,11 @@ export default function Hero() {
           className="font-display text-center text-[9vw] font-medium uppercase leading-[0.9] tracking-tight text-fg sm:text-[5vw] md:text-[3.4vw]"
         />
 
-        <div className="relative mt-4 h-7 overflow-hidden sm:h-8">
-          {profile.roles.map((role, i) => (
-            <p
-              key={role}
-              className="font-display absolute inset-x-0 text-sm font-light uppercase tracking-[0.3em] text-gradient-red transition-all duration-700 sm:text-base"
-              style={{
-                transform: `translateY(${(i - roleIndex) * 100}%)`,
-                opacity: i === roleIndex ? 1 : 0,
-              }}
-            >
-              {role}
-            </p>
-          ))}
+        <div className="relative mt-4 h-7 sm:h-8">
+          <TypingText
+            words={profile.roles}
+            className="text-sm font-medium uppercase tracking-[0.3em] text-gradient-red sm:text-base"
+          />
         </div>
       </div>
 

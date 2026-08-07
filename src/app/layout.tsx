@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Inter } from "next/font/google";
+import { Bricolage_Grotesque, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/system/SmoothScroll";
 import CustomCursor from "@/components/system/CustomCursor";
@@ -17,6 +17,16 @@ const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
+});
+
+// The site leans on font-mono constantly (HUD telemetry, boot sequences,
+// terminal-style tags) — that was quietly falling back to the generic
+// system monospace stack. A real technical mono face sells the "AI OS"
+// read much harder, especially now that typed/typewriter text uses it too.
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 // maximumScale/userScalable stop the standard pinch-zoom gesture on
@@ -49,7 +59,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${bricolage.variable} ${inter.variable}`}>
+    <html
+      lang="en"
+      className={`${bricolage.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+    >
       <body className="bg-bg-void text-fg antialiased">
         <DisablePinchZoom />
         <CustomCursor />
