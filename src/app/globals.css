@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #05050506;
+  --bg-void: #030303;
+  --bg-elevated: #0c0c0d;
+  --fg: #f4f2f0;
+  --fg-dim: #9a9694;
+  --line: rgba(244, 242, 240, 0.08);
+
+  --red-primary: #8b0000;
+  --red-mid: #c1121f;
+  --red-bright: #ff2e2e;
+  --silver: #c7c7c9;
+  --metal: #232326;
+
+  --font-display: var(--font-bricolage);
+  --font-body: var(--font-inter);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-void: var(--bg-void);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-fg: var(--fg);
+  --color-fg-dim: var(--fg-dim);
+  --color-line: var(--line);
+  --color-red-primary: var(--red-primary);
+  --color-red-mid: var(--red-mid);
+  --color-red-bright: var(--red-bright);
+  --color-silver: var(--silver);
+  --color-metal: var(--metal);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  /* Compositor-level pinch-zoom guard for Chrome/Firefox/Samsung Internet —
+     allows panning/scrolling on both axes but drops the pinch gesture
+     itself, without touching JS. Pairs with the viewport meta (layout.tsx)
+     and the iOS Safari JS backstop (DisablePinchZoom). */
+  touch-action: pan-x pan-y;
+}
+
+html {
+  background: var(--bg-void);
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg-void);
+  color: var(--fg);
+  font-family: var(--font-body), system-ui, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--red-mid);
+  color: #fff;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display), system-ui, sans-serif;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--red-primary); border-radius: 4px; }
+
+/* Glass panels */
+.glass {
+  background: linear-gradient(180deg, rgba(139, 0, 0, 0.06), rgba(12, 12, 13, 0.6));
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--line);
+}
+
+/* Promotes continuously-transformed elements to their own GPU compositing
+   layer ahead of time, rather than the browser deciding mid-animation —
+   the difference between a scrub starting smooth vs. stuttering on the
+   first frame while it promotes the layer late. Used sparingly: only on
+   things that animate for the section's entire lifetime (pins, loops). */
+.gpu-layer {
+  will-change: transform;
+}
+
+.text-gradient-red {
+  background: linear-gradient(135deg, var(--red-bright) 0%, var(--red-primary) 60%, #4a0000 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(139, 0, 0, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 0, 0, 0.08) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+@keyframes particle-drift {
+  0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.2; }
+  50% { transform: translate3d(0, -14px, 0); opacity: 0.8; }
+}
+
+.particle-drift {
+  animation: particle-drift 6s ease-in-out infinite;
+}
+
+.noise::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hud-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--red-bright);
+  opacity: 0.6;
+}
+
+/* Custom cursor */
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background: var(--red-bright);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: screen;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(255, 46, 46, 0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 768px) {
+  .cursor-dot, .cursor-ring { display: none; }
+}
