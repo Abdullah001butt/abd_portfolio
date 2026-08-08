@@ -126,6 +126,15 @@ h1, h2, h3, h4, .font-display {
   animation: typing-cursor-blink 1s step-end infinite;
 }
 
+@keyframes terminal-line-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.terminal-line {
+  animation: terminal-line-in 0.4s ease-out forwards;
+}
+
 .noise::before {
   content: "";
   position: absolute;

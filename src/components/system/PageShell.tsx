@@ -4,6 +4,7 @@ import { useState, type ReactNode } from "react";
 import Intro from "@/components/sections/Intro";
 import Nav from "@/components/system/Nav";
 import DotNav from "@/components/system/DotNav";
+import ScrollProgress from "@/components/system/ScrollProgress";
 
 /**
  * Owns the Intro boot-curtain's client state and wraps the page's content.
@@ -19,6 +20,7 @@ export default function PageShell({ children }: { children: ReactNode }) {
   return (
     <>
       {!booted && <Intro onDone={() => setBooted(true)} />}
+      <ScrollProgress />
       <Nav />
       <DotNav />
       <main>{children}</main>

@@ -11,6 +11,13 @@ type Command = {
   run: () => void;
 };
 
+type EasterEgg = {
+  id: string;
+  triggers: string[];
+  lines: string[];
+  action?: () => void;
+};
+
 /**
  * Cmd/Ctrl+K palette — jump to any section, copy contact info, or open
  * external links without leaving the keyboard. Purely client-side, no
@@ -44,14 +51,47 @@ export default function CommandPalette() {
     },
     { id: "github", label: "Open GitHub", hint: "Link", run: () => window.open(profile.github, "_blank", "noreferrer") },
     { id: "linkedin", label: "Open LinkedIn", hint: "Link", run: () => window.open(profile.linkedin, "_blank", "noreferrer") },
-    { id: "resume", label: "Download resume", hint: "Link", run: () => window.open("/resume.docx", "_blank") },
+    { id: "resume", label: "View resume", hint: "Link", run: () => window.open("/resume", "_blank") },
   ];
-
-  const filtered = commands.filter((c) => c.label.toLowerCase().includes(query.toLowerCase()));
 
   function scrollTo(hash: string) {
     document.querySelector(hash)?.scrollIntoView({ behavior: "smooth" });
   }
+
+  // Hidden commands — typed exactly, not filtered like the normal list.
+  // Small, tasteful, and the kind of detail that only a technical visitor
+  // who tries "sudo hire me" or "whoami" would ever see.
+  const easterEggs: EasterEgg[] = [
+    {
+      id: "hire",
+      triggers: ["sudo hire me", "hire me", "hire abdullah"],
+      lines: [
+        "> authenticating request...",
+        "> permission check: RECRUITER",
+        "> access granted.",
+        "> redirecting to contact protocol...",
+      ],
+      action: () => scrollTo("#contact"),
+    },
+    {
+      id: "whoami",
+      triggers: ["whoami"],
+      lines: [
+        `> user: ${profile.shortName}`,
+        `> role: ${profile.roles[0]}`,
+        "> clearance: root",
+        "> status: open to opportunities",
+      ],
+    },
+    {
+      id: "sandwich",
+      triggers: ["sudo make me a sandwich", "make me a sandwich"],
+      lines: ["> sudo: sandwich — permission denied.", "> did you mean: build me a product?"],
+    },
+  ];
+
+  const matchedEgg = easterEggs.find((egg) => egg.triggers.includes(query.trim().toLowerCase()));
+  const filtered = commands.filter((c) => c.label.toLowerCase().includes(query.toLowerCase()));
 
   function close() {
     setOpen(false);
@@ -90,7 +130,21 @@ export default function CommandPalette() {
     setActiveIndex(0);
   }, [query]);
 
+  // Let the terminal-style readout play out before running the egg's
+  // action (if any) and closing — keyed on the egg's id so it only fires
+  // once per activation, not on every keystroke re-render.
+  useEffect(() => {
+    if (!matchedEgg?.action) return;
+    const t = setTimeout(() => {
+      matchedEgg.action?.();
+      close();
+    }, 1600);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matchedEgg?.id]);
+
   function onKeyDown(e: React.KeyboardEvent) {
+    if (matchedEgg) return;
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setActiveIndex((i) => Math.min(i + 1, filtered.length - 1));
@@ -144,27 +198,43 @@ export default function CommandPalette() {
         </div>
 
         <div className="max-h-80 overflow-y-auto p-2">
-          {filtered.length === 0 && (
-            <p className="px-3 py-6 text-center font-mono text-xs text-fg-dim">No matches.</p>
+          {matchedEgg ? (
+            <div className="px-4 py-6 font-mono text-xs text-red-bright">
+              {matchedEgg.lines.map((line, i) => (
+                <p
+                  key={i}
+                  className="terminal-line opacity-0"
+                  style={{ animationDelay: `${i * 0.25}s` }}
+                >
+                  {line}
+                </p>
+              ))}
+            </div>
+          ) : (
+            <>
+              {filtered.length === 0 && (
+                <p className="px-3 py-6 text-center font-mono text-xs text-fg-dim">No matches.</p>
+              )}
+              {filtered.map((cmd, i) => (
+                <button
+                  key={cmd.id}
+                  type="button"
+                  data-cursor-hover
+                  onMouseEnter={() => setActiveIndex(i)}
+                  onClick={() => {
+                    cmd.run();
+                    if (cmd.id !== "email") close();
+                  }}
+                  className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
+                    i === activeIndex ? "bg-red-primary/15 text-fg" : "text-fg-dim"
+                  }`}
+                >
+                  <span>{cmd.id === "email" && copied ? "Copied ✓" : cmd.label}</span>
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-fg-dim/70">{cmd.hint}</span>
+                </button>
+              ))}
+            </>
           )}
-          {filtered.map((cmd, i) => (
-            <button
-              key={cmd.id}
-              type="button"
-              data-cursor-hover
-              onMouseEnter={() => setActiveIndex(i)}
-              onClick={() => {
-                cmd.run();
-                if (cmd.id !== "email") close();
-              }}
-              className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
-                i === activeIndex ? "bg-red-primary/15 text-fg" : "text-fg-dim"
-              }`}
-            >
-              <span>{cmd.id === "email" && copied ? "Copied ✓" : cmd.label}</span>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-fg-dim/70">{cmd.hint}</span>
-            </button>
-          ))}
         </div>
       </div>
     </div>

@@ -49,9 +49,19 @@ export default function Nav() {
       {/* Persistent bar — blend-difference only applies here, never to the
           opaque mobile drawer below (which needs a true solid background). */}
       <div className="flex items-center justify-between px-6 py-5 mix-blend-difference sm:px-10">
-        <a href="#hero" data-cursor-hover className="font-display text-sm tracking-widest text-fg">
-          A.BUTT
-        </a>
+        <div className="flex items-center gap-5">
+          <a href="#hero" data-cursor-hover className="font-display text-sm tracking-widest text-fg">
+            A.BUTT
+          </a>
+          {/* Status badge — an honest, non-assumed claim about availability,
+              only shown where there's room not to crowd the mobile bar. */}
+          <div className="hidden items-center gap-2 border-l border-line pl-5 lg:flex">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-bright" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-fg-dim">
+              Open to opportunities
+            </span>
+          </div>
+        </div>
 
         {/* Desktop links */}
         <div className="hidden gap-8 sm:flex">
