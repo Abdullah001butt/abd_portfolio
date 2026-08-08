@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { profile } from "@/lib/data";
+import Magnetic from "@/components/ui/Magnetic";
 
 const links = [
   { label: "Email", value: profile.email, href: `mailto:${profile.email}` },
@@ -22,28 +23,30 @@ export default function Contact() {
           Activate the <span className="text-gradient-red">AI</span>
         </h2>
 
-        <button
-          data-cursor-hover
-          onClick={() => setActive((v) => !v)}
-          className="group relative mt-16 flex h-40 w-40 items-center justify-center rounded-full border border-red-bright/50 sm:h-52 sm:w-52"
-        >
-          <span
-            className={`absolute inset-0 rounded-full border border-red-bright/30 transition-transform duration-700 ${
-              active ? "scale-150 opacity-0" : "scale-100 opacity-100"
-            }`}
-          />
-          <span
-            className={`absolute inset-0 rounded-full border border-red-bright/20 transition-transform duration-1000 ${
-              active ? "scale-[1.8] opacity-0" : "scale-100 opacity-100"
-            }`}
-          />
-          <span className="absolute inset-0 rounded-full bg-red-primary/10 blur-2xl transition-opacity duration-500 group-hover:opacity-80" />
-          <span className="font-display relative z-10 text-sm font-medium uppercase tracking-[0.2em] text-fg">
-            Initiate
-            <br />
-            Connection
-          </span>
-        </button>
+        <Magnetic strength={0.25} className="mt-16">
+          <button
+            data-cursor-hover
+            onClick={() => setActive((v) => !v)}
+            className="group relative flex h-40 w-40 items-center justify-center rounded-full border border-red-bright/50 sm:h-52 sm:w-52"
+          >
+            <span
+              className={`absolute inset-0 rounded-full border border-red-bright/30 transition-transform duration-700 ${
+                active ? "scale-150 opacity-0" : "scale-100 opacity-100"
+              }`}
+            />
+            <span
+              className={`absolute inset-0 rounded-full border border-red-bright/20 transition-transform duration-1000 ${
+                active ? "scale-[1.8] opacity-0" : "scale-100 opacity-100"
+              }`}
+            />
+            <span className="absolute inset-0 rounded-full bg-red-primary/10 blur-2xl transition-opacity duration-500 group-hover:opacity-80" />
+            <span className="font-display relative z-10 text-sm font-medium uppercase tracking-[0.2em] text-fg">
+              Initiate
+              <br />
+              Connection
+            </span>
+          </button>
+        </Magnetic>
 
         <div
           className={`mt-16 grid w-full gap-4 overflow-hidden transition-all duration-700 sm:grid-cols-2 ${

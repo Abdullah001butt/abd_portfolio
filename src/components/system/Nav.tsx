@@ -1,17 +1,31 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useActiveSection } from "@/hooks/useActiveSection";
+import { SECTION_IDS } from "@/lib/sections";
 
 const links = [
-  { label: "Engineer", href: "#engineer" },
-  { label: "Work", href: "#creator" },
-  { label: "Experience", href: "#experience" },
-  { label: "Stack", href: "#stack" },
-  { label: "Contact", href: "#contact" },
+  { label: "Engineer", href: "#engineer", id: "engineer" },
+  { label: "Work", href: "#creator", id: "creator" },
+  { label: "Experience", href: "#experience", id: "experience" },
+  { label: "Stack", href: "#stack", id: "stack" },
+  { label: "Contact", href: "#contact", id: "contact" },
 ];
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
+  const active = useActiveSection(SECTION_IDS);
+
+  // Nav only links 5 of the 11 sections — while scrolled through one it
+  // doesn't link (e.g. "system", "github"), highlight whichever linked
+  // section comes last at-or-before it in document order, so the nav
+  // never just goes blank.
+  const activeIndex = SECTION_IDS.indexOf(active as (typeof SECTION_IDS)[number]);
+  const activeLinkHref = links.reduce<string | null>((best, link) => {
+    const linkIndex = SECTION_IDS.indexOf(link.id as (typeof SECTION_IDS)[number]);
+    if (linkIndex <= activeIndex) return link.href;
+    return best;
+  }, null);
 
   // Lock scroll while the mobile drawer is open, and always close it on
   // resize past the mobile breakpoint so it can't get stuck open.
@@ -46,8 +60,16 @@ export default function Nav() {
               key={l.href}
               href={l.href}
               data-cursor-hover
-              className="text-xs uppercase tracking-[0.2em] text-fg/80 transition-colors hover:text-fg"
+              aria-current={l.href === activeLinkHref ? "true" : undefined}
+              className={`flex items-center gap-1.5 text-xs uppercase tracking-[0.2em] transition-colors hover:text-fg ${
+                l.href === activeLinkHref ? "text-fg" : "text-fg/80"
+              }`}
             >
+              <span
+                className={`h-1 w-1 rounded-full bg-red-bright transition-opacity duration-300 ${
+                  l.href === activeLinkHref ? "opacity-100" : "opacity-0"
+                }`}
+              />
               {l.label}
             </a>
           ))}

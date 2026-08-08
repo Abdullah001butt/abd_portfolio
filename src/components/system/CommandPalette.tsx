@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { profile } from "@/lib/data";
+import Magnetic from "@/components/ui/Magnetic";
 
 type Command = {
   id: string;
@@ -108,16 +109,18 @@ export default function CommandPalette() {
 
   if (!open) {
     return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        data-cursor-hover
-        aria-label="Open command palette"
-        className="fixed right-6 bottom-6 z-40 hidden items-center gap-2 rounded-full border border-line bg-bg-elevated/80 px-4 py-2 font-mono text-[11px] uppercase tracking-widest text-fg-dim backdrop-blur transition-colors hover:border-red-bright/50 hover:text-fg md:flex"
-      >
-        <span className="h-1.5 w-1.5 rounded-full bg-red-bright" />
-        ⌘K
-      </button>
+      <Magnetic strength={0.3} className="fixed right-6 bottom-6 z-40 hidden md:block">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          data-cursor-hover
+          aria-label="Open command palette"
+          className="flex items-center gap-2 rounded-full border border-line bg-bg-elevated/80 px-4 py-2 font-mono text-[11px] uppercase tracking-widest text-fg-dim backdrop-blur transition-colors hover:border-red-bright/50 hover:text-fg"
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-red-bright" />
+          ⌘K
+        </button>
+      </Magnetic>
     );
   }
 
