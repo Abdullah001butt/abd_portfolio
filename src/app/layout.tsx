@@ -4,6 +4,7 @@ import "./globals.css";
 import SmoothScroll from "@/components/system/SmoothScroll";
 import CustomCursor from "@/components/system/CustomCursor";
 import DisablePinchZoom from "@/components/system/DisablePinchZoom";
+import CommandPalette from "@/components/system/CommandPalette";
 
 // A variable, high-personality display face — swapped in for the flatter
 // Space Grotesk to give headings real character instead of reading generic.
@@ -66,6 +67,7 @@ export default function RootLayout({
       <body className="bg-bg-void text-fg antialiased">
         <DisablePinchZoom />
         <CustomCursor />
+        <CommandPalette />
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>
